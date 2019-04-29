@@ -38,14 +38,10 @@ class analyzer {
         }).then((words)=>{
             // get answers from characters
             let dobby_ans = dobby.ask(words);
-            let
             res.send(dobby_ans);
         });
     }
 
 }
-
-
-
 
 module.exports = analyzer;

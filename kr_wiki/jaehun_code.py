@@ -5,3 +5,4 @@ query = sys.argv[1]
 
 # 출력 대답
 print("출력")
+print("아무거나")

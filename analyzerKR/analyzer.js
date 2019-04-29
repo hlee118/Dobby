@@ -5,6 +5,13 @@ let functions = require('./functions');
 let libStatics = require("../lib/statics");
 let langCommon = require('../lang/common');
 let lang = require("../lang/kr");
+let {PythonShell} = require('python-shell');
+const shell_options = {
+    mode: 'text',
+    pythonPath: '',
+    pythonOptions: ['-u'],
+    scriptPath:'',
+};
 
 // TODO 형태소 분석 후 할 수 있도록
 
@@ -18,6 +25,14 @@ class analyzer {
     }
 
     execute() {
+        shell_options.args = [this.query];
+        PythonShell.run('KHAIII_shell.py', shell_options, function(err, results){
+            if(err) throw err;
+
+
+            res.send(results);
+        });
+
         if (lang.YES.includes(this.query)) {
             // Yes
             this.yes();

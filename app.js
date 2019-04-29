@@ -6,7 +6,6 @@ let bodyParser = require('body-parser');
 let https = require('https');
 const fs = require('fs');
 const options = {
-    ca: fs.readFileSync('./https/fullchain.pem'),
     key: fs.readFileSync('./https/privkey.pem'),
     cert: fs.readFileSync('./https/cert.pem')
 };
@@ -18,15 +17,6 @@ let dialogflow = require('./dialogflow')
 let indexRouter = require('./routes/index');
 let pageRouter = require('./routes/page');
 
-let {PythonShell} = require('python-shell');
-const options = {
-	mode: 'text',
-	pythonPath: '',
-	pythonOptions: ['-u'],
-	scriptPath:'',
-	args:["안녕, 세상"],
-};
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -37,10 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // router
 app.get('/', (req, res) => {
-	PythonShell.run('shell.py', options, function(err, results){
-		if(err) throw err;
-    res.send("result: %j", results);
-	});
+
 });
 
 app.post('/fulfillment', dialogflow)

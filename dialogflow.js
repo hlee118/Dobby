@@ -9,8 +9,8 @@ const SELECTED = "SELECTED";
 // actions functions
 const {
     dialogflow,
-    Permission,
-    Suggestions,
+    // Permission,
+    // Suggestions,
 } = require('actions-on-google');
 
 const app = dialogflow({

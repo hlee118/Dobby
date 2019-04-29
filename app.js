@@ -26,12 +26,8 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 // router
-app.get('/', (req, res) => {
-
-});
-
 app.post('/fulfillment', dialogflow)
-// app.use('/', indexRouter)
+app.use('/', indexRouter)
 // app.use('/page', pageRouter)
 
 // catch 404 and forward to error handler

@@ -19,24 +19,33 @@ class analyzer {
         this.resolve = resolve;
     }
 
-    /*
-      형태소 분석
-      분석 API: KHAIII
-    */
-
-    // 구문 분석
-    // 의미 분석
-    // 화용 분석
     execute() {
+        /*
+            <질문 분석>
+            형태소 분석 O
+            구문 분석 X
+            의미 분석 X
+            화용 분석 X
+
+            <대답 형성>
+            도비
+            QA
+            WIKI
+        */
         new promise((resolve)=>{
-            // part of speach tagging
+            /*
+                part of speach tagging(KHAIII)
+            */
             shell_options.args = [this.query];
             PythonShell.run('KHAIII_shell.py', shell_options, function(err, results){
-              if(err) throw err;
-              resolve(results);
+                if(err) throw err;
+                resolve(results);
             });
         }).then((words)=>{
-            // get answers from characters
+            /*
+                get answers from characters
+                dobby, qa, wiki
+            */
             let dobby_ans = dobby.ask(words);
             res.send(dobby_ans);
         });

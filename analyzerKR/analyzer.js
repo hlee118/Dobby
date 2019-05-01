@@ -1,8 +1,8 @@
 // modules
 let langCommon = require('../lang/common');
 let lang = require("../lang/kr");
-let {PythonShell} = require('python-shell');
 let dobby = require("../kr_dobby/index");
+let {PythonShell} = require('python-shell');
 const shell_options = {
     mode: 'text',
     pythonPath: '',
@@ -37,7 +37,7 @@ class analyzer {
                 part of speach tagging(KHAIII)
             */
             shell_options.args = [this.query];
-            PythonShell.run('KHAIII_shell.py', shell_options, function(err, results){
+            PythonShell.run('KoNLPy.py', shell_options, function(err, results){
                 if(err) throw err;
                 resolve(results);
             });

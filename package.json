@@ -14,7 +14,7 @@
     "express": "^4.16.4",
     "https": "^1.0.0",
     "mysql": "^2.16.0",
-    "selenium-webdriver": "^4.0.0-alpha.1",
-    "python-shell": "^1.0.7"
+    "python-shell": "^1.0.7",
+    "selenium-webdriver": "^4.0.0-alpha.1"
   }
 }

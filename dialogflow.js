@@ -1,5 +1,5 @@
 // modules
-let statics = require("./lib/statics");
+// let statics = require("./lib/statics");
 
 // intent status
 const READY = "READY";

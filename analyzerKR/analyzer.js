@@ -1,56 +1,56 @@
+/*
+    Edited by Hyunsik Lee
+    Common Korean analysis class
+*/
+
 // modules
-let langCommon = require('../lang/common');
 let lang = require("../lang/kr");
-let dobby = require("../kr_dobby/index");
 let {PythonShell} = require('python-shell');
+let os = require('os');
 const shell_options = {
     mode: 'text',
     pythonPath: '',
     pythonOptions: ['-u'],
-    scriptPath:'',
+    scriptPath: '',
 };
 
+if (os.type() == "Windows_NT") {
+    shell_options.scriptPath = "C:/Users/Lee/Documents/Dobby/analyzerKR";
+}
+
+let instance;
 class analyzer {
-    constructor(query, storage, resolve) {
-        this.connection = mysql.createConnection(db_info);
-        this.query = query;
-        this.words = query.split(langCommon.SPACE);
-        this.storage = storage;
-        this.resolve = resolve;
+    constructor(query) {
+        if (instance) return instance;
+
+        instance = this;
+        instance.query = query;
     }
 
-    execute() {
-        /*
-            <질문 분석>
-            형태소 분석 O
-            구문 분석 X
-            의미 분석 X
-            화용 분석 X
+    // 텍스트 전처리
+    tokenization() {
+        instance.tokenizedResult = instance.query.split(" ");
+    }
 
-            <대답 형성>
-            도비
-            QA
-            WIKI
-        */
-        new promise((resolve)=>{
-            /*
-                part of speach tagging(KHAIII)
-            */
+    // 형태소 분석
+    partOfSpeechTagging() {
+        return new Promise((resolve)=>{
+            if (instance.taggingResult) return instance.taggingResult;
+
             shell_options.args = [this.query];
-            PythonShell.run('KoNLPy.py', shell_options, function(err, results){
-                if(err) throw err;
+            PythonShell.run("KoNLPy.py", shell_options, function (err, results) {
+                if (err) throw err;
+                instance.taggingResult = results;
                 resolve(results);
             });
-        }).then((words)=>{
-            /*
-                get answers from characters
-                dobby, qa, wiki
-            */
-            let dobby_ans = dobby.ask(words);
-            res.send(dobby_ans);
         });
     }
 
-}
+    // TODO 구문 분석
+
+    // TODO 의미 분석
+
+    // TODO 화용 분석
+};
 
 module.exports = analyzer;

@@ -1,3 +1,11 @@
+/*
+    Made by Jaehun Ah
+    2019-05-01
+
+    <Theory>
+    TF-IDF
+*/
+
 let {PythonShell} = require('python-shell');
 const shell_options = {
     mode: 'text',

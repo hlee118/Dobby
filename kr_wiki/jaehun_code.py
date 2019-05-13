@@ -1,5 +1,6 @@
 import sys
 import wikipediaapi
+
 # 입력된 단어들
 query = sys.argv[1]
 

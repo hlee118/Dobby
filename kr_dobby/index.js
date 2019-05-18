@@ -4,42 +4,80 @@
 
     <Theory>
     1. Part of Speech Tagging
-    2. Database search
+    2. Cosine smilarity
 */
 
 let mysql = require('mysql');
 let db_info = require('../lib/db');
 let analyzer = require('../analyzerKR/analyzer');
+const shell_options = {
+    mode: 'text',
+    pythonPath: '',
+    pythonOptions: ['-u'],
+    scriptPath: '',
+};
+
+function max = (a, b)=>{
+    if(a > b) return a;
+    else return b;
+}
 
 class dobby{
-    constructor(query) {
-        this.analyzer = new analyzer(query);
+    constructor() {
+        this.analyzer = new analyzer();
     }
 
-    ask() {
-        return new Promise((resolve)=>{
-            // query part of speech tagging
-            analyzer = this.analyzer;
-            analyzer.partOfSpeechTagging().then((results)=>{
-                return results;
-            }).then((results)=>{
-                // Get data from database
-                const connection = mysql.createConnection(db_info);
-                const SQLQuery = "SELECT * FROM dobby_q";
-                connection.connect((err)=>{if (err) throw err;});
-                connection.query(SQLQuery, function(err, rows, fields) {
-                    // 명사 동사 형용사 비교
-                    // 명사구 동사구 형용사구에 대해서 우선도 높게
-                    // TODO 주어 목적어 서술어...
+    ask(query) {
+        let POSTResult;
+        let documents = new Array();
+        analyzer = this.analyzer;
+        analyzer.setQuery(query);
+        analyzer.partOfSpeechTagging().then((results)=>{
+            // Query part of speech tagging
+            POSTResult = results;
 
-                    // 명사 동사 형용사 형식으로 대신 데이터베이스 설계
-                    // 비교 분석
+            // Get data from database
+            const connection = mysql.createConnection(db_info);
+            const SQLQuery = "SELECT * FROM dobby_q";
+            connection.connect((err)=>{if (err) throw err;});
+            connection.query(SQLQuery, function(err, rows, fields) {
+                if (err) throw err;
 
-                    if (err) throw err;
-                    resolve([results, rows]);
+                rows.foreach((element)=>{
+                    documents.push(element.split(" "));
                 });
-                connection.end();
+
+                return;
+                // 명사 동사 형용사 비교
+                // 명사구 동사구 형용사구에 대해서 우선도 높게
+                // TODO 주어 목적어 서술어...
+
+                // 명사 동사 형용사 형식으로 대신 데이터베이스 설계
+                // 비교 분석
             });
+            connection.end();
+        }).then((promise_args)=>{
+            // similarity
+
+            let max_similarity = 0
+            for(let i=0;i<documents.length();i++){
+                const total = max(len(doc), len(POSTResult))
+                let count = 0
+            }
+
+                for value in POSTResult:
+                    if value in doc:
+                        count++
+                similarity.append(count/total)
+
+            // shell_options.args = promise_args;
+            // PythonShell.run("similarity.py", shell_options, function (err, similarity) {
+            //     if (err) throw err;
+            //     return similarity;
+            // });
+
+        }).then(()=>{
+
         });
 
         // if(this.query.includes("자료")){

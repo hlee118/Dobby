@@ -20,10 +20,13 @@ if (os.type() == "Windows_NT") {
 
 let instance;
 class analyzer {
-    constructor(query) {
+    constructor() {
         if (instance) return instance;
 
         instance = this;
+    }
+
+    setQuery(query){
         instance.query = query;
     }
 

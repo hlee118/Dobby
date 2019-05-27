@@ -10,6 +10,7 @@
 let mysql = require('mysql');
 let db_info = require('../lib/db');
 let analyzer = require('../analyzerKR/analyzer');
+
 const shell_options = {
     mode: 'text',
     pythonPath: '',
@@ -17,12 +18,14 @@ const shell_options = {
     scriptPath: '',
 };
 
-function max = (a, b)=>{
+const { exec } = require('child_process');
+
+function max(a, b){
     if(a > b) return a;
     else return b;
 }
 
-class dobby{
+class Dobby{
     constructor() {
         this.analyzer = new analyzer();
     }
@@ -30,6 +33,8 @@ class dobby{
     ask(query) {
         let POSTResult;
         let documents = new Array();
+        let answers = new Array();
+
         analyzer = this.analyzer;
         analyzer.setQuery(query);
         analyzer.partOfSpeechTagging().then((results)=>{
@@ -43,11 +48,13 @@ class dobby{
             connection.query(SQLQuery, function(err, rows, fields) {
                 if (err) throw err;
 
-                rows.foreach((element)=>{
-                    documents.push(element.split(" "));
-                });
-
+                console.log(rows[0].noun);
+                for(let i=0;i<rows.length;i++){
+                    documents.push(rows[i].noun.split(" "));
+                    answers.push(rows[i].answer);
+                }
                 return;
+
                 // 명사 동사 형용사 비교
                 // 명사구 동사구 형용사구에 대해서 우선도 높게
                 // TODO 주어 목적어 서술어...
@@ -58,17 +65,24 @@ class dobby{
             connection.end();
         }).then((promise_args)=>{
             // similarity
-
             let max_similarity = 0
-            for(let i=0;i<documents.length();i++){
+            let index = -1;
+            for(let i=0;i<documents.length;i++){
+                const doc = documents[i];
                 const total = max(len(doc), len(POSTResult))
                 let count = 0
+                for(let j=0;j<len(POSTResult);j++){
+                    if(doc.includes(POSTResult[j]))
+                        count ++;
+                }
+                const similarity = count / total;
+                if(silmilarity > max_similarity){
+                    max_similarity = similarity;
+                    index = i;
+                }
             }
 
-                for value in POSTResult:
-                    if value in doc:
-                        count++
-                similarity.append(count/total)
+            console.log(max_similarity);
 
             // shell_options.args = promise_args;
             // PythonShell.run("similarity.py", shell_options, function (err, similarity) {
@@ -119,5 +133,7 @@ class dobby{
     }
 }
 
+let dobby = new Dobby();
+dobby.ask("테스트용 문장 분석 테스트")
 
 module.exports = dobby;

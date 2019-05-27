@@ -7,6 +7,7 @@
 let lang = require("../lang/kr");
 let {PythonShell} = require('python-shell');
 let os = require('os');
+
 const shell_options = {
     mode: 'text',
     pythonPath: '',
@@ -45,6 +46,7 @@ class analyzer {
                 if (err) throw err;
                 instance.taggingResult = results;
                 resolve(results);
+                console.log(results);
             });
         });
     }
@@ -55,5 +57,7 @@ class analyzer {
 
     // TODO 화용 분석
 };
+
+
 
 module.exports = analyzer;

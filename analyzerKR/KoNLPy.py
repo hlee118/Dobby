@@ -1,8 +1,6 @@
 import sys
+from konlpy.tag import Hannanum
 
-query = sys.argv[1]
-
-from konlpy.tag import Kkma
-from konlpy.utils import pprint
-kkma = Kkma()
-print(kkma.sentences(query))
+query = input()
+hannanum = Hannanum()
+print(str(hannanum.nouns(query)))

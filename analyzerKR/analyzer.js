@@ -7,11 +7,12 @@
 let lang = require("../lang/kr");
 let {PythonShell} = require('python-shell');
 let os = require('os');
+
 const shell_options = {
     mode: 'text',
     pythonPath: '',
     pythonOptions: ['-u'],
-    scriptPath: '',
+    scriptPath: '/home/ubuntu/Dobby/analyzerKR',
 };
 
 if (os.type() == "Windows_NT") {
@@ -40,12 +41,25 @@ class analyzer {
         return new Promise((resolve)=>{
             if (instance.taggingResult) return instance.taggingResult;
 
-            shell_options.args = [this.query];
-            PythonShell.run("KoNLPy.py", shell_options, function (err, results) {
-                if (err) throw err;
-                instance.taggingResult = results;
-                resolve(results);
+            // shell_options.args = [this.query];
+            let shell = new PythonShell('KoNLPy.py', shell_options);
+            shell.send(this.query);
+            shell.on('message', function (message) {
+                console.log(message);
             });
+
+            // end the input stream and allow the process to exit
+            shell.end(function (err,code,signal) {
+              if (err) throw err;
+            });
+
+            // shell_options.args = [this.query];
+            // PythonShell.run("KoNLPy.py", shell_options, function (err, results) {
+            //     if (err) throw err;
+            //     instance.taggingResult = results;
+            //     resolve(results);
+            //     console.log(results);
+            // });
         });
     }
 
@@ -55,5 +69,7 @@ class analyzer {
 
     // TODO 화용 분석
 };
+
+
 
 module.exports = analyzer;

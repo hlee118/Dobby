@@ -27,15 +27,14 @@ function max(a, b){
 
 class Dobby{
     constructor() {
-
-    }
-
-    ask(query) {
         this.analyzer = new analyzer();
         this.POSTResult = new Array();
         this.docs = new Array();
         this.answers = new Array();
+    }
 
+    ask(query) {
+        // console.log("질문: " + query);
         analyzer = this.analyzer;
         analyzer.setQuery(query);
         analyzer.partOfSpeechTagging()
@@ -51,13 +50,9 @@ class Dobby{
         .then((rows)=>{
             for(let i=0;i<rows.length;i++){
                 // this.docs.push(rows[i].noun.split(" "));
-                this.docs.push(rows[i].noun);
+                this.docs.push(rows[i].words);
                 this.answers.push(rows[i].answer);
             }
-            console.log(this.docs);
-            console.log(this.answers);
-            console.log(this.POSTResult[0]);
-
             // 명사 동사 형용사 비교
             // 명사구 동사구 형용사구에 대해서 우선도 높게
             // TODO 주어 목적어 서술어...
@@ -77,15 +72,15 @@ class Dobby{
                         count ++;
                     }
                 }
-                const similarity = count / words_length;
+                const similarity = count / max(doc.split(" ").length, words_length);
                 if(similarity > max_similarity){
                     max_similarity = similarity;
                     index = i;
                 }
             }
 
-            console.log(max_similarity);
-            console.log(this.answers[index]);
+            console.log("정확도: " + max_similarity);
+            console.log("정답: " + this.answers[index]);
 
             // shell_options.args = promise_args;
             // PythonShell.run("similarity.py", shell_options, function (err, similarity) {
@@ -112,8 +107,6 @@ class Dobby{
 }
 
 let dobby = new Dobby();
-dobby.ask("컴퓨터공학과 졸업요거언")
-let dobby2 = new Dobby();
-dobby2.ask("컴퓨터공학과 졸업요건")
+dobby.ask(process.argv[2])
 
 module.exports = dobby;

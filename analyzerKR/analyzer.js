@@ -44,22 +44,15 @@ class analyzer {
             // shell_options.args = [this.query];
             let shell = new PythonShell('KoNLPy.py', shell_options);
             shell.send(this.query);
-            shell.on('message', function (message) {
-                console.log(message);
+            shell.on('message', function (results) {
+                instance.taggingResult = results;
+                resolve(results);
             });
 
             // end the input stream and allow the process to exit
             shell.end(function (err,code,signal) {
               if (err) throw err;
             });
-
-            // shell_options.args = [this.query];
-            // PythonShell.run("KoNLPy.py", shell_options, function (err, results) {
-            //     if (err) throw err;
-            //     instance.taggingResult = results;
-            //     resolve(results);
-            //     console.log(results);
-            // });
         });
     }
 

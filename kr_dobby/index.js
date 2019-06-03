@@ -27,62 +27,65 @@ function max(a, b){
 
 class Dobby{
     constructor() {
-        this.analyzer = new analyzer();
+
     }
 
     ask(query) {
-        let POSTResult;
-        let documents = new Array();
-        let answers = new Array();
+        this.analyzer = new analyzer();
+        this.POSTResult = new Array();
+        this.docs = new Array();
+        this.answers = new Array();
 
         analyzer = this.analyzer;
         analyzer.setQuery(query);
-        analyzer.partOfSpeechTagging().then((results)=>{
+        analyzer.partOfSpeechTagging()
+        .then((results)=>{
             // Query part of speech tagging
-            POSTResult = results;
+            const re_split = results.split('\'');
+            for(let i=0;i<re_split.length;i++){
+                if(i % 2 == 1)
+                    this.POSTResult.push(re_split[i]);
+            }
+            return this.getDataFromDB();
+        })
+        .then((rows)=>{
+            for(let i=0;i<rows.length;i++){
+                // this.docs.push(rows[i].noun.split(" "));
+                this.docs.push(rows[i].noun);
+                this.answers.push(rows[i].answer);
+            }
+            console.log(this.docs);
+            console.log(this.answers);
+            console.log(this.POSTResult[0]);
 
-            // Get data from database
-            const connection = mysql.createConnection(db_info);
-            const SQLQuery = "SELECT * FROM dobby_q";
-            connection.connect((err)=>{if (err) throw err;});
-            connection.query(SQLQuery, function(err, rows, fields) {
-                if (err) throw err;
+            // 명사 동사 형용사 비교
+            // 명사구 동사구 형용사구에 대해서 우선도 높게
+            // TODO 주어 목적어 서술어...
 
-                console.log(rows[0].noun);
-                for(let i=0;i<rows.length;i++){
-                    documents.push(rows[i].noun.split(" "));
-                    answers.push(rows[i].answer);
-                }
-                return;
+            // 명사 동사 형용사 형식으로 대신 데이터베이스 설계
+            // 비교 분석
 
-                // 명사 동사 형용사 비교
-                // 명사구 동사구 형용사구에 대해서 우선도 높게
-                // TODO 주어 목적어 서술어...
-
-                // 명사 동사 형용사 형식으로 대신 데이터베이스 설계
-                // 비교 분석
-            });
-            connection.end();
-        }).then((promise_args)=>{
             // similarity
             let max_similarity = 0
             let index = -1;
-            for(let i=0;i<documents.length;i++){
-                const doc = documents[i];
-                const total = max(len(doc), len(POSTResult))
+            const words_length = this.POSTResult.length;
+            for(let i=0;i<this.docs.length;i++){
+                const doc = this.docs[i];
                 let count = 0
-                for(let j=0;j<len(POSTResult);j++){
-                    if(doc.includes(POSTResult[j]))
+                for(let j=0;j<words_length;j++){
+                    if(doc.includes(this.POSTResult[j])){
                         count ++;
+                    }
                 }
-                const similarity = count / total;
-                if(silmilarity > max_similarity){
+                const similarity = count / words_length;
+                if(similarity > max_similarity){
                     max_similarity = similarity;
                     index = i;
                 }
             }
 
             console.log(max_similarity);
+            console.log(this.answers[index]);
 
             // shell_options.args = promise_args;
             // PythonShell.run("similarity.py", shell_options, function (err, similarity) {
@@ -90,50 +93,27 @@ class Dobby{
             //     return similarity;
             // });
 
-        }).then(()=>{
-
         });
+    }
 
-        // if(this.query.includes("자료")){
-        //     this.connection.connect();
-        //     let date_object = functions.getDate(this.query);
-        //     console.log(date_object);
-        //
-        //     let SQLQuery = "SELECT * FROM temp_books";
-        //     switch (date_object.type) {
-        //         case libStatics.DATE_TYPE_BETWEEN:
-        //             SQLQuery += " WHERE date BETWEEN '" + date_object.first_date.year + "-" + date_object.first_date.month + "-" + date_object.first_date.date + "'";
-        //             SQLQuery += " AND '" + date_object.second_date.year + "-" + date_object.second_date.month + "-" + date_object.second_date.date + "'";
-        //             break;
-        //         case libStatics.DATE_TYPE_IN:
-        //             SQLQuery += " WHERE YEAR(date) = " + date_object.date.year;
-        //             if (date_object.date.flags.month_set)
-        //                 SQLQuery += " AND MONTH(date) = " + date_object.date.month;
-        //             break;
-        //         case libStatics.DATE_TYPE_SINCE:
-        //             SQLQuery += " WHERE date > '" + date_object.date.year + "-" + date_object.date.month + "-" + date_object.date.date + "'";
-        //             break;
-        //     }
-        //     SQLQuery += ";";
-        //     console.log(SQLQuery);
-        //
-        //     this.connection.query(SQLQuery, (error, results, fields) => {
-        //         if (error)
-        //             throw error;
-        //
-        //         let object = {
-        //             type: libStatics.TYPE_ASK,
-        //             data: results.length,
-        //         };
-        //         this.resolve(object);
-        //     });
-        //
-        //     this.connection.end();
-        //     };
+    getDataFromDB(){
+        return new Promise((resolve)=>{
+            // Get data from database
+            const connection = mysql.createConnection(db_info);
+            const SQLQuery = "SELECT * FROM dobby_q";
+            connection.connect((err)=>{if (err) throw err;});
+            connection.query(SQLQuery, function(err, rows, fields) {
+                if (err) throw err;
+                resolve(rows);
+            });
+            connection.end();
+        });
     }
 }
 
 let dobby = new Dobby();
-dobby.ask("테스트용 문장 분석 테스트")
+dobby.ask("컴퓨터공학과 졸업요거언")
+let dobby2 = new Dobby();
+dobby2.ask("컴퓨터공학과 졸업요건")
 
 module.exports = dobby;

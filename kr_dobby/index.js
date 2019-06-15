@@ -8,9 +8,10 @@
 */
 
 "use strict";
+let path = require('path').join(__dirname);
 let mysql = require('mysql');
-let db_info = require('../lib/db');
-let analyzer = require('../analyzerKR/analyzer');
+let db_info = require(path, "../lib/db");
+let analyzer = require(path, '../analyzerKR/analyzer');
 
 const shell_options = {
     mode: 'text',

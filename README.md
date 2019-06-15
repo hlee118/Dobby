@@ -1,7 +1,7 @@
 # Dobby
 
 ## Proposer/Member
-이현식 / 안재훈
+ 이현식 / 안재훈
 
 ## Overview
 Let me introduce Dobby which is question-answering system. Ask Dobby anything. He'll let you know everything he knows.

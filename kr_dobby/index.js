@@ -7,6 +7,7 @@
     2. Cosine smilarity
 */
 
+"use strict";
 let mysql = require('mysql');
 let db_info = require('../lib/db');
 let analyzer = require('../analyzerKR/analyzer');

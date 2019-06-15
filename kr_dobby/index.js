@@ -7,11 +7,11 @@
     2. Cosine smilarity
 */
 
-"use strict";
-let path = require('path').join(__dirname);
+let db_path = require('path').join(__dirname, "../lib/db");
+let analyzer_path = require('path').join(__dirname, "../analyzerKR/analyzer");
 let mysql = require('mysql');
-let db_info = require(path, "../lib/db");
-let analyzer = require(path, '../analyzerKR/analyzer');
+let db_info = require(db_path);
+let analyzer = require(analyzer_path);
 
 const shell_options = {
     mode: 'text',

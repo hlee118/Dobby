@@ -67,7 +67,7 @@ class Dobby{
 
             let answer = this.answers[index];
             if(index == -1)
-                answer = "";
+                answer = "정답을 모르겠습니다";
 
             return [answer, max_similarity]
         });

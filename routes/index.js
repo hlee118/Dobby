@@ -4,6 +4,7 @@ let dobby_path = require('path').join(__dirname, "../kr_dobby/index");
 let Dobby = require(dobby_path);
 
 router.get('/', (req, res) => {
+    console.log(req.body.query);
     let dobby = new Dobby();
     dobby.ask(req.body.query).then((dobby_res)=>{
         const answer = dobby_res[0];

@@ -5,12 +5,12 @@ let path = require('path');
 let bodyParser = require('body-parser');
 let https = require('https');
 const fs = require('fs');
-const options = {
-    key: fs.readFileSync('./https/privkey.pem'),
-    cert: fs.readFileSync('./https/cert.pem')
-};
-let server = https.createServer(options, app)
-let port = 443;
+// const options = {
+//     key: fs.readFileSync('./https/privkey.pem'),
+//     cert: fs.readFileSync('./https/cert.pem')
+// };
+// let server = https.createServer(options, app)
+let port = 80;
 let dialogflow = require('./dialogflow')
 
 // routers path
@@ -35,9 +35,13 @@ app.use(function (req, res, next) {
     res.status(404).send('Sorry cant find that!');
 });
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// server.listen(port);
+// server.on('error', onError);
+// server.on('listening', onListening);
+
+app.listen(port);
+app.on('error', onError);
+app.on('listening', onListening);
 
 function onError(error) {
     if (error.syscall !== 'listen') {

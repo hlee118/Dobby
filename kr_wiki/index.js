@@ -7,25 +7,42 @@
 */
 
 let {PythonShell} = require('python-shell');
-const shell_options = {
-    mode: 'text',
-    pythonPath: '',
-    pythonOptions: ['-u'],
-    scriptPath:'',
-};
+let os = require('os');
 
-class wiki{
-    constructor(query) {
-        this.query = query;
+class Wiki{
+    constructor() {
+        this.docs = new Array();
+        this.answers = new Array();
+
+        this.shell_options = {
+            mode: 'text',
+            pythonPath: '',
+            pythonOptions: ['-u'],
+            scriptPath: '/home/ubuntu/Dobby/kr_wiki',
+        };
+
+        if (os.type() == "Windows_NT") {
+            shell_options.scriptPath = "C:/Users/Lee/Documents/Dobby/kr_wiki";
+        }
     }
 
     ask(){
-        shell_options.args = [this.query];
-        PythonShell.run('jaehun_code.py', shell_options, function(err, results){
-          if(err) throw err;
-          return results;
-        });
+        return new Promise((resolve)=>{
+
+            // shell_options.args = [this.query];
+            let shell = new PythonShell('wiki.py', this.shell_options);
+            shell.send("홍익대학교");
+            shell.on('message', function (results) {
+                const result_split = results.split(' ');
+                resolve(result_split);
+            });
+
+            // end the input stream and allow the process to exit
+            shell.end(function (err,code,signal) {
+              if (err) throw err;
+            });
+        })
     }
 }
 
-module.exports = wiki;
+module.exports = Wiki;

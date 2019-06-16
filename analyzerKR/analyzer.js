@@ -8,44 +8,39 @@ let lang = require("../lang/kr");
 let {PythonShell} = require('python-shell');
 let os = require('os');
 
-const shell_options = {
-    mode: 'text',
-    pythonPath: '',
-    pythonOptions: ['-u'],
-    scriptPath: '/home/ubuntu/Dobby/analyzerKR',
-};
-
-if (os.type() == "Windows_NT") {
-    shell_options.scriptPath = "C:/Users/Lee/Documents/Dobby/analyzerKR";
-}
-
-let instance;
-class analyzer {
+class Analyzer {
     constructor() {
-        if (instance) return instance;
+        this.shell_options = {
+            mode: 'text',
+            pythonPath: '',
+            pythonOptions: ['-u'],
+            scriptPath: '/home/ubuntu/Dobby/analyzerKR',
+        };
 
-        instance = this;
+        if (os.type() == "Windows_NT") {
+            shell_options.scriptPath = "C:/Users/Lee/Documents/Dobby/analyzerKR";
+        }
     }
 
     setQuery(query){
-        instance.query = query;
+        this.query = query;
     }
 
     // 텍스트 전처리
     tokenization() {
-        instance.tokenizedResult = instance.query.split(" ");
+        this.tokenizedResult = this.query.split(" ");
     }
 
     // 형태소 분석
     partOfSpeechTagging() {
         return new Promise((resolve)=>{
-            if (instance.taggingResult) return instance.taggingResult;
+            if (this.taggingResult) return this.taggingResult;
 
             // shell_options.args = [this.query];
-            let shell = new PythonShell('KoNLPy.py', shell_options);
+            let shell = new PythonShell('KoNLPy.py', this.shell_options);
             shell.send(this.query);
             shell.on('message', function (results) {
-                instance.taggingResult = results;
+                this.taggingResult = results;
                 resolve(results);
             });
 
@@ -65,4 +60,4 @@ class analyzer {
 
 
 
-module.exports = analyzer;
+module.exports = Analyzer;

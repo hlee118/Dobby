@@ -1,11 +1,14 @@
 let express = require('express');
 let router = express.Router();
-let kr_dobby = require("../kr_dobby/index");
+let dobby_path = require('path').join(__dirname, "../kr_dobby/index");
+let Dobby = require(dobby_path);
 
 router.get('/', (req, res) => {
-    let dobby = new kr_dobby(req.body.query);
-    dobby.ask().then((dobby_ans)=>{
-        res.send(dobby_ans);
+    let dobby = new Dobby();
+    dobby.ask(req.body.query).then((dobby_res)=>{
+        const answer = dobby_res[0];
+        const accuracy = dobby_res[1];
+        res.send({result:0, data:{"answer":answer, "accuracy":accuracy}});
     });
 });
 

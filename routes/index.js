@@ -3,7 +3,7 @@ let router = express.Router();
 let dobby_path = require('path').join(__dirname, "../kr_dobby/index");
 let Dobby = require(dobby_path);
 
-router.get('/', (req, res) => {
+router.post('/', (req, res) => {
     console.log(req.body.query);
     let dobby = new Dobby();
     dobby.ask(req.body.query).then((dobby_res)=>{

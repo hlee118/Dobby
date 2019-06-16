@@ -1,5 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+
 import sys
 import wikipediaapi
 from numpy import dot
@@ -16,9 +18,10 @@ cv = CountVectorizer()
 #자연어 질의
 komoran = Komoran()
 query = sys.argv[1]
+
 #print(komoran.morphs(query))
-query_matrix = komoran.morphs(query)
-q = cv.fit_transform(query_matrix)
+#query_matrix = komoran.morphs(query)
+#q = cv.fit_transform(query_matrix)
 
 #tfidfv = TfidfVectorizer().fit(q)
 
@@ -30,21 +33,49 @@ answer2 = sys.argv[3]
 wiki_ko = wikipediaapi.Wikipedia('ko')
 
 page_py = wiki_ko.page(answer1)
-q1 = page_py.summary[0:]
+q1 = page_py.summary[0:] #문서 검색 내용
 #q1 = komoran.morphs(q1)
+#q1 = cv.fit_transform(q1)
+
 #tdm1 = cv.fit_transform(q1) #Term Document Matirx
 #TF1 = tdm1.sum(axis=0) #Term Frequency
 #print(TF1.shape)
 
 page_py = wiki_ko.page(answer2)
-q2 = page_py.summary[0:]
-#q2 = komoran.morphs(q2)
+q2 = page_py.summary[0:] #문서 검색 내용
+#q2 = komoran.morphs(q2) #형태소 분석기
+#q2 = cv.fit_transform(q2)
+
 #tdm2 = cv.fit_transform(q2)
 #TF2 = tdm2.sum(axis=0)
 #print(TF2.shape)
 
-X = np.array(cv.fit_transform([query, q1, q2]).todense()) # TDM
-print(X)
+corpus = [query, q1, q2]
+#print(cv.fit_transform(corpus).toarray())
+#print(cv.vocabulary_)
+
+tfidfv = TfidfVectorizer().fit(corpus)
+print(tfidfv.transform(corpus).toarray())
+tfidfv_matrix = tfidfv.transform(corpus)
+print(tfidfv.vocabulary_)
+
+print(tfidfv_matrix.shape)
+cos1 = tfidfv_matrix[0,0:]
+cos2 = tfidfv_matrix[0,1:]
+cos3 = np.array(tfidfv_matrix[0,2:])
+print(cos1[0][0])
+print(cos1)
+print (cos1.shape)
+#print(cos3)
+def cos_sim(A, B):
+       return dot(A, B)/(norm(A)*norm(B))
+#cosine_sim = linear_kernel(tfidfv_matrix, tfidfv_matrix)
+
+#print(cos2.shpae)
+
+#print(cos_sim(cos1,cos3))
+#X = np.array(cv.fit_transform([query, q1, q2]).todense()) # TDM
+#print(X.shape)
 
 #정답 후보 순위 결정
 #TF-IDF
@@ -66,8 +97,6 @@ vector = CountVectorizer()
 #a = model.wv.most_similar(q2)
 #print(a)
 
-def cos_sim(A, B):
-       return dot(A, B)/(norm(A)*norm(B))
 
 #정답 결정 # cosine similar
 #tfidf_matrix = tfidfv.fit_transform(q)

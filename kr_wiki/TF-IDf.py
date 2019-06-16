@@ -63,8 +63,8 @@ print(tfidfv_matrix.shape)
 cos1 = tfidfv_matrix[0,0:]
 cos2 = tfidfv_matrix[0,1:]
 cos3 = np.array(tfidfv_matrix[0,2:])
-print(cos1[0][0])
-print(cos1)
+#print(cos1.T)
+print()
 print (cos1.shape)
 #print(cos3)
 def cos_sim(A, B):

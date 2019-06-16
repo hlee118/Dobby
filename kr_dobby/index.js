@@ -65,7 +65,11 @@ class Dobby{
                 }
             }
 
-            return [this.answers[index], max_similarity]
+            let answer = this.answers[index];
+            if(index == -1)
+                answer = "";
+
+            return [answer, max_similarity]
         });
     }
 }

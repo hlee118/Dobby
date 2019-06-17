@@ -8,12 +8,19 @@ from numpy.linalg import norm
 import numpy as np
 from konlpy.tag import Komoran
 import pandas as pd
+import pickle
+import os
+f = open("wiki_space_tokenizer.txt",'r')
+#data = f.load()
+#print(data)
 
 #자연어 질의
 komoran = Komoran()
 query = sys.argv[1]
 
 #query = komoran.morphs(query)
+#query = query.replace(",","")
+#print(query)
 
 #객관식 문제들
 answer1 = sys.argv[2]
@@ -42,17 +49,18 @@ q2 = page_py.summary[0:] #문서 검색 내용
 cv = CountVectorizer()
 
 corpus = [query, q1, q2]
+#print(corpus)
 #cv.fit_transform(corpus)
 #print(cv.fit_transform(corpus).toarray())
 #print(cv.vocabulary_)
 
 tfidfv = TfidfVectorizer().fit(corpus)
-print(tfidfv.transform(corpus).toarray())
+#print(tfidfv.transform(corpus).toarray())
 tfidfv_matrix = tfidfv.transform(corpus)
-print(tfidfv.vocabulary_)
+#print(tfidfv.vocabulary_)
 
 cosine_sim = linear_kernel(tfidfv_matrix, tfidfv_matrix)
-print(cosine_sim)
+#print(cosine_sim)
 
 cos1 = cosine_sim[0,1]
 cos2 = cosine_sim[0,2]

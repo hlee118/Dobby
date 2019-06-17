@@ -16,7 +16,8 @@ f = open("wiki_space_tokenizer.txt",'r')
 
 #자연어 질의
 komoran = Komoran()
-query = sys.argv[1]
+query = input()
+# 거북선을 만든 사람은 누구인가요?
 
 #query = komoran.morphs(query)
 #query = query.replace(",","")

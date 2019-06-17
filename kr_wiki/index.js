@@ -26,20 +26,20 @@ class Wiki{
         }
     }
 
-    ask(){
+    ask(query){
         return new Promise((resolve)=>{
 
             // shell_options.args = [this.query];
-            let shell = new PythonShell('wiki.py', this.shell_options);
-            shell.send("홍익대학교 교수");
-            shell.on('message', function (results) {
-                const result_split = results.split(' ');
-                resolve(result_split);
-            });
+            let file_name = "wiki.py";
+            if(query.split(' ').length > 1){
+                // file_name = "TF-IDF.py";
+                resolve(["찾을 수 없습니다", 0])
+            }
 
-            // end the input stream and allow the process to exit
-            shell.end(function (err,code,signal) {
-              if (err) throw err;
+            this.shell_options.args = [query];
+            PythonShell.run(file_name, this.shell_options, function (err, results) {
+                if (err) throw err;
+                resolve(results)
             });
         })
     }

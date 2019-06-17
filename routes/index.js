@@ -34,7 +34,7 @@ router.post('/', (req, res) => {
     })
     .then(()=>{
         let wiki = new Wiki();
-        return wiki.ask()
+        return wiki.ask(req.body.query)
         .then((wiki_res)=>{
             const answer = wiki_res[0];
             const accuracy = wiki_res[1];

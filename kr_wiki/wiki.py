@@ -18,4 +18,4 @@ tfidfv = TfidfVectorizer().fit(corpus)
 query = input();
 #
 # # 출력 대답
-print("result", 100)
+print("결과가 없습니다", 100)

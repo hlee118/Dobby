@@ -32,7 +32,8 @@ class Wiki{
             // shell_options.args = [this.query];
             let file_name = "wiki.py";
             if(query.split(' ').length > 1){
-                file_name = "TF-IDF.py";
+                // file_name = "TF-IDF.py";
+                resolve(["찾을 수 없습니다", 0])
             }
 
             this.shell_options.args = [query];

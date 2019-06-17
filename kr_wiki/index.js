@@ -31,7 +31,7 @@ class Wiki{
 
             // shell_options.args = [this.query];
             let shell = new PythonShell('wiki.py', this.shell_options);
-            shell.send("홍익대학교");
+            shell.send("홍익대학교 교수");
             shell.on('message', function (results) {
                 const result_split = results.split(' ');
                 resolve(result_split);

@@ -21,6 +21,7 @@ class Analyzer {
             shell_options.scriptPath = "C:/Users/Lee/Documents/Dobby/analyzerKR";
         }
     }
+    
 
     setQuery(query){
         this.query = query;
